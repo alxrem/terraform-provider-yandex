@@ -140,6 +140,7 @@ func provider(emptyFolder bool) terraform.ResourceProvider {
 			"yandex_iam_role":                 dataSourceYandexIAMRole(),
 			"yandex_iam_service_account":      dataSourceYandexIAMServiceAccount(),
 			"yandex_iam_user":                 dataSourceYandexIAMUser(),
+			"yandex_iam_token":                dataSourceYandexIAMToken(),
 			"yandex_iot_core_device":          dataSourceYandexIoTCoreDevice(),
 			"yandex_iot_core_registry":        dataSourceYandexIoTCoreRegistry(),
 			"yandex_kubernetes_cluster":       dataSourceYandexKubernetesCluster(),
