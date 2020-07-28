@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"reflect"
+	"strconv"
 
 	wrappers "github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/hashcode"
@@ -130,6 +131,8 @@ func flattenPGUser(u *postgresql.User) (map[string]interface{}, error) {
 
 	m["grants"] = u.Grants
 
+	m["conn_limit"] = u.ConnLimit
+
 	return m, nil
 }
 
@@ -164,6 +167,10 @@ func pgUserHash(u interface{}) int {
 
 	if v, ok := m["grants"]; ok {
 		buf.WriteString(fmt.Sprintf("%v-", v))
+	}
+
+	if v, ok := m["conn_limit"]; ok {
+		buf.WriteString(fmt.Sprintf("%d-", v.(int64)))
 	}
 
 	return hashcode.String(buf.String())
@@ -395,6 +402,14 @@ func expandPGUser(m map[string]interface{}) (*postgresql.UserSpec, error) {
 			return nil, err
 		}
 		user.Grants = gs
+	}
+
+	if v, ok := m["conn_limit"]; ok {
+		connLimit, err := strconv.ParseInt(v.(string), 10, 64)
+		if err != nil {
+			return nil, err
+		}
+		user.ConnLimit = &wrappers.Int64Value{Value: connLimit}
 	}
 
 	return user, nil
